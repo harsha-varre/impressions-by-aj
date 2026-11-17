@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --shell: 1200px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-body font-sans antialiased;
+    font-feature-settings: "liga" 1, "calt" 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-ink font-display;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: #f3dcdf;
+    color: #2d2528;
+  }
+
+  /* Visible focus for keyboard users */
+  :focus-visible {
+    outline: 2px solid #a85666;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-6 md:px-10;
+  }
+
+  .micro {
+    @apply font-sans font-bold uppercase text-rose-deep;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+  }
+
+  .hairline {
+    @apply bg-hairline;
+    height: 1px;
+  }
+
+  /* Striped placeholder used by ImageSlot when no photo is supplied */
+  .image-stripes {
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(217, 138, 148, 0.14) 0px,
+      rgba(217, 138, 148, 0.14) 2px,
+      transparent 2px,
+      transparent 11px
+    );
+    background-color: #faece9;
+  }
+}
+
+/* Respect reduced-motion for CSS transitions too */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
