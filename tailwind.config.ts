@@ -9,25 +9,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Base surfaces
-        cream: "#fdf7f3",
-        wash: "#f6e6e3",
-        blush: "#f3dcdf",
-        // Pastel accents
+        // Pastel surfaces
+        cream: "#fdf7f3", // card background
+        pagewash: "#f7eceb", // page background
+        wash: "#f6e6e3", // warm wash — Categories, Contact
+        blush: "#f3dcdf", // Services band, hero panel
         mint: "#dde8dc",
         lilac: "#e3d9e6",
         butter: "#f3e4bf",
-        // Brand rose
+        // Accent — dusty rose
         rose: {
-          DEFAULT: "#d98a94",
-          hover: "#c87a85",
-          deep: "#a85666",
+          DEFAULT: "#d98a94", // primary — CTAs, pill
+          hover: "#c87a85", // hover / micro-labels
+          deep: "#a85666", // deep accent
+          soft: "#e8a8b0", // soft heart overlay
         },
-        // Text
-        ink: "#2d2528",
+        // Ink & text
+        ink: "#3a2f3a", // headings / primary text
         body: "#5a4a52",
         muted: "#7a6670",
+        "muted-soft": "#a08a90",
+        eyebrow: "#8a5560",
+        "eyebrow-deep": "#6a4a52",
+        // Hairlines
         hairline: "#f0dcdc",
+        "hairline-rose": "#f0cdd0",
+        "hairline-warm": "#e8c8c8",
       },
       fontFamily: {
         display: ["var(--font-caslon)", "Georgia", "serif"],

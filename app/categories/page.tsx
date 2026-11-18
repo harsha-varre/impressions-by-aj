@@ -69,7 +69,7 @@ export default function CategoriesPage() {
         </div>
       </section>
 
-      <section className="bg-blush/40 py-16 md:py-24">
+      <section className="bg-wash py-16 md:py-24">
         <div className="shell">
           <MotionSection>
             <SectionDivider label="Indoor & ceremony · 10 categories" />

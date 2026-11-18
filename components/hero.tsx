@@ -11,7 +11,7 @@ export function Hero() {
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-blush md:aspect-video">
         {/* Decorative hearts */}
         <Heart
-          className="absolute left-[8%] top-[18%] h-8 w-8 rotate-[-12deg] fill-rose/80 text-rose/80 md:h-11 md:w-11"
+          className="absolute left-[8%] top-[18%] h-8 w-8 rotate-[-12deg] fill-rose-soft text-rose-soft md:h-11 md:w-11"
           aria-hidden="true"
         />
         <Heart

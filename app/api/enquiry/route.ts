@@ -83,7 +83,7 @@ export async function POST(req: Request) {
   const from = `Impressions by AJ <onboarding@resend.dev>`;
 
   const studioHtml = `
-    <h2 style="font-family:Georgia,serif;color:#2d2528">New enquiry</h2>
+    <h2 style="font-family:Georgia,serif;color:#3a2f3a">New enquiry</h2>
     <p><strong>Name:</strong> ${escapeHtml(name)}</p>
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
     <p><strong>Occasion:</strong> ${escapeHtml(occasion)}</p>
@@ -94,7 +94,7 @@ export async function POST(req: Request) {
   `;
 
   const replyHtml = `
-    <div style="font-family:Georgia,serif;color:#2d2528">
+    <div style="font-family:Georgia,serif;color:#3a2f3a">
       <p>Hi ${escapeHtml(name)},</p>
       <p>Thank you for reaching out to Impressions by AJ. We've received your
       enquiry about <strong>${escapeHtml(occasion)}</strong> and will reply
