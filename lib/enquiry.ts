@@ -8,10 +8,10 @@ export const occasionOptions = [
 ];
 
 export const sessionOptions = [
-  "Essential · 1 – 2 hr",
-  "Signature · 3 – 4 hr",
-  "Archive · 5 – 6 hr",
-  "Full-day (wedding / arangetram)",
+  "1 – 2 hr · Essential",
+  "3 – 4 hr · Signature",
+  "5 – 6 hr · Archive",
+  "Full day (wedding / arangetram)",
   "Not sure yet",
 ];
 
@@ -28,7 +28,7 @@ export const enquirySchema = z.object({
     .trim()
     .min(1, "Pick a session length.")
     .refine((v) => sessionOptions.includes(v), "Pick a session from the list."),
-  date: z.string().trim().min(1, "Add a preferred date.").max(40),
+  date: z.string().trim().max(40).optional().default(""),
   message: z
     .string()
     .trim()

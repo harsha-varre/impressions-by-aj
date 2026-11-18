@@ -52,25 +52,25 @@ export default function AboutPage() {
         <div className="shell grid items-center gap-12 md:grid-cols-2">
           <div>
             <span className="micro">About the studio</span>
-            <h1 className="mt-4 font-display text-4xl italic leading-[1.1] text-ink md:text-6xl">
-              The moment, not the pose.
+            <h1 className="mt-4 font-display text-4xl leading-[1.05] text-ink md:text-6xl">
+              A small studio with a{" "}
+              <span className="italic">long memory.</span>
             </h1>
             <p className="mt-6 font-sans text-body">
-              Impressions by AJ is a New Jersey photography studio built around
-              South Asian ceremonies and the milestones in between —
-              housewarmings and cradle ceremonies, half sarees and arangetrams,
-              graduations, maternity and the quiet family afternoons.
+              Impressions by AJ is a photography &amp; cinema studio based in New
+              Jersey, built around South Asian ceremonies, family milestones, and
+              the small moments between.
             </p>
             <p className="mt-4 font-sans text-body">
-              The work is calm and close. We read the room, stay out of the way,
-              and come back with photos and film that feel like the day actually
-              felt — nothing stiff, nothing staged.
+              Every booking comes with a conversation first — about the day, the
+              family, the feeling. The pictures follow from there.
             </p>
           </div>
           <ImageSlot
             ratio="4/5"
-            caption="Portrait · the photographer"
-            alt="Impressions by AJ"
+            accent="blush"
+            caption="AJ · 4:5"
+            alt="Impressions by AJ, the photographer"
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
           />

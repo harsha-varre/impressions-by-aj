@@ -52,16 +52,39 @@
     height: 1px;
   }
 
-  /* Striped placeholder used by ImageSlot when no photo is supplied */
-  .image-stripes {
+  /* Accent-tinted striped placeholders used by ImageSlot when no photo is set */
+  .stripes-rose,
+  .stripes-blush,
+  .stripes-mint,
+  .stripes-butter,
+  .stripes-lilac {
     background-image: repeating-linear-gradient(
       135deg,
-      rgba(217, 138, 148, 0.14) 0px,
-      rgba(217, 138, 148, 0.14) 2px,
+      var(--stripe) 0px,
+      var(--stripe) 2px,
       transparent 2px,
       transparent 11px
     );
-    background-color: #faece9;
+  }
+  .stripes-rose {
+    --stripe: rgba(217, 138, 148, 0.14);
+    background-color: #f7e5e4;
+  }
+  .stripes-blush {
+    --stripe: rgba(201, 122, 133, 0.12);
+    background-color: #f1dadd;
+  }
+  .stripes-mint {
+    --stripe: rgba(118, 150, 116, 0.13);
+    background-color: #d8e7d5;
+  }
+  .stripes-butter {
+    --stripe: rgba(188, 162, 88, 0.15);
+    background-color: #efe1bb;
+  }
+  .stripes-lilac {
+    --stripe: rgba(150, 120, 165, 0.13);
+    background-color: #ded4e6;
   }
 }
 

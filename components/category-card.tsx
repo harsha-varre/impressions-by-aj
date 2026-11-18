@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { ImageSlot } from "./image-slot";
-import type { Category } from "@/lib/categories";
+import { accentFor, type Category } from "@/lib/categories";
 
+/**
+ * A colored striped square with a cream footer holding the two-digit index
+ * and the Caslon title.
+ */
 export function CategoryCard({
   category,
   index,
@@ -13,23 +17,23 @@ export function CategoryCard({
   return (
     <Link
       href={`/categories/${category.slug}`}
-      className="group block"
+      className="group block border border-hairline bg-cream transition-colors hover:border-rose/50"
     >
-      <ImageSlot
-        ratio="1/1"
-        index={num}
-        caption={category.title}
-        alt={`${category.title} — Impressions by AJ`}
-        className="transition-transform duration-500 group-hover:scale-[1.01]"
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-      />
-      <div className="mt-3 flex items-baseline gap-3">
-        <span className="font-mono text-[11px] text-rose-deep/70">{num}</span>
-        <h3 className="font-display text-lg leading-tight text-ink transition-colors group-hover:text-rose-deep">
+      <div className="p-2">
+        <ImageSlot
+          ratio="1/1"
+          accent={accentFor(index)}
+          alt={`${category.title} — Impressions by AJ`}
+          className="transition-transform duration-500 group-hover:scale-[1.01]"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        />
+      </div>
+      <div className="px-4 pb-4 pt-1">
+        <span className="font-mono text-[11px] text-rose-hover">{num}</span>
+        <h3 className="mt-1 font-display text-lg leading-tight text-ink transition-colors group-hover:text-rose-deep">
           {category.title}
         </h3>
       </div>
-      <p className="mt-1 pl-7 font-sans text-xs text-muted">{category.blurb}</p>
     </Link>
   );
 }

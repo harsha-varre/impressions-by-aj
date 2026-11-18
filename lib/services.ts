@@ -1,11 +1,13 @@
 export interface ServiceTier {
   id: string;
+  index: string;
   label: string;
   duration: string;
-  summary: string;
   inclusions: string[];
-  highlighted?: boolean;
 }
+
+export const servicesIntro =
+  "Sessions scale from basic to full-day coverage with photo, video and drone — delivered to your spec.";
 
 export const deliverables =
   "Every tier delivers selected edited photos, short reels, long-form video on request and optional drone coverage. Sessions scale 1 → 6 hours, with custom day rates for weddings and arangetrams.";
@@ -13,44 +15,38 @@ export const deliverables =
 export const tiers: ServiceTier[] = [
   {
     id: "essential",
+    index: "01",
     label: "Essential",
-    duration: "1 – 2 hr",
-    summary: "A focused session for a single moment done well.",
+    duration: "1 – 2 hours",
     inclusions: [
-      "1 – 2 hour session",
-      "Selected edited photos",
-      "One short reel",
-      "Long-form video on request",
-      "Online gallery delivery",
+      "1 photographer",
+      "Edited stills",
+      "Short reel",
+      "Ideal for cradle, cake-cut, baby shower",
     ],
   },
   {
     id: "signature",
+    index: "02",
     label: "Signature",
-    duration: "3 – 4 hr",
-    summary: "Our most-booked tier — a full event, start to finish.",
+    duration: "3 – 4 hours",
     inclusions: [
-      "3 – 4 hour coverage",
-      "Expanded set of edited photos",
-      "Two short reels",
-      "Long-form video on request",
-      "Optional drone coverage",
-      "Online gallery delivery",
+      "Photo + video",
+      "Edited stills + short cut",
+      "Optional drone",
+      "Birthdays, engagements, reunions",
     ],
-    highlighted: true,
   },
   {
     id: "archive",
+    index: "03",
     label: "Archive",
-    duration: "5 – 6 hr",
-    summary: "The whole day, every chapter, nothing missed.",
+    duration: "5 – 6 hours",
     inclusions: [
-      "5 – 6 hour coverage",
-      "Full edited photo archive",
-      "Multiple short reels",
-      "Long-form film included on request",
-      "Drone coverage",
-      "Priority edit & delivery",
+      "Full photo + video + drone",
+      "Short & long-form films",
+      "2nd shooter available",
+      "Weddings, arangetrams, galas",
     ],
   },
 ];

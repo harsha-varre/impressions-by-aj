@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import { ServiceTierCard } from "@/components/service-tier";
 import { SectionDivider } from "@/components/section-divider";
 import { MotionSection } from "@/components/motion-section";
-import { tiers, addOns, deliverables } from "@/lib/services";
+import { tiers, addOns, servicesIntro, deliverables } from "@/lib/services";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -19,10 +19,15 @@ export default function ServicesPage() {
     <>
       <section className="bg-cream py-16 md:py-24">
         <div className="shell">
-          <span className="micro">Services</span>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl italic leading-[1.1] text-ink md:text-6xl">
-            Three tiers, one standard of care.
-          </h1>
+          <span className="micro">What&rsquo;s included</span>
+          <div className="mt-4 grid gap-6 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
+            <h1 className="font-display text-4xl leading-[1.05] text-ink md:text-6xl">
+              One hour, or <span className="italic">the whole day.</span>
+            </h1>
+            <p className="max-w-xs font-sans text-sm text-body">
+              {servicesIntro}
+            </p>
+          </div>
           <p className="mt-6 max-w-2xl font-sans text-body">{deliverables}</p>
         </div>
       </section>
@@ -31,7 +36,7 @@ export default function ServicesPage() {
       <section className="bg-blush py-16 md:py-24">
         <div className="shell">
           <MotionSection>
-            <SectionDivider label="Coverage tiers" />
+            <SectionDivider label="Coverage tiers" meta="3 options" />
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {tiers.map((tier) => (
                 <ServiceTierCard key={tier.id} tier={tier} />
@@ -40,7 +45,7 @@ export default function ServicesPage() {
           </MotionSection>
 
           <MotionSection className="mt-20">
-            <SectionDivider label="Add-ons" />
+            <SectionDivider label="Add-ons" meta="4 extras" />
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {addOns.map((addon) => (
                 <div
@@ -67,8 +72,8 @@ export default function ServicesPage() {
           <MotionSection className="border border-hairline bg-wash p-10 md:flex md:items-center md:justify-between md:p-14">
             <div className="max-w-lg">
               <span className="micro">Weddings &amp; arangetrams</span>
-              <h2 className="mt-3 font-display text-2xl italic text-ink md:text-3xl">
-                Custom day rates for the big ones.
+              <h2 className="mt-3 font-display text-2xl text-ink md:text-3xl">
+                Custom day rates for <span className="italic">the big ones.</span>
               </h2>
               <p className="mt-4 font-sans text-body">
                 Full-day weddings and arangetrams are quoted per event so the
@@ -78,7 +83,7 @@ export default function ServicesPage() {
             </div>
             <Link
               href="/contact"
-              className="mt-8 inline-flex h-12 items-center bg-rose px-8 font-sans text-sm font-semibold text-white transition-colors hover:bg-rose-hover md:mt-0"
+              className="mt-8 inline-flex h-12 items-center bg-rose px-8 font-sans text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-rose-hover md:mt-0"
             >
               Request a quote
             </Link>

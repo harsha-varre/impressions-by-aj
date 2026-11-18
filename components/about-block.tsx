@@ -1,30 +1,53 @@
+import Link from "next/link";
 import { ImageSlot } from "./image-slot";
 
 export function AboutBlock() {
   return (
     <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
-      <div className="order-2 md:order-1">
-        <span className="micro">About · Impressions by AJ</span>
-        <h2 className="mt-4 font-display text-3xl italic leading-tight text-ink md:text-4xl">
-          A New Jersey photographer who shoots the moment, not the pose.
+      <div>
+        <span className="micro">About the studio</span>
+        <h2 className="mt-4 font-display text-3xl leading-tight text-ink md:text-4xl">
+          A small studio with a <span className="italic">long memory.</span>
         </h2>
         <p className="mt-5 font-sans text-body">
-          Impressions by AJ is built around South Asian ceremonies and the
-          milestones that fill the years between them — housewarmings,
-          birthdays, cradle ceremonies, arangetrams, graduations and the quiet
-          family afternoons in good light.
+          Impressions by AJ is a photography &amp; cinema studio based in New
+          Jersey, built around South Asian ceremonies, family milestones, and
+          the small moments between.
         </p>
         <p className="mt-4 font-sans text-body">
-          The work is calm and close. We stay out of the way, read the room, and
-          come back with photos and film that feel like the day actually felt.
+          Every booking comes with a conversation first — about the day, the
+          family, the feeling. The pictures follow from there.
         </p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/contact"
+            className="inline-flex h-12 items-center justify-center bg-rose px-7 font-sans text-sm font-semibold uppercase tracking-wider text-white transition-colors hover:bg-rose-hover"
+          >
+            Request a quote
+          </Link>
+          <Link
+            href="/portfolio"
+            className="inline-flex h-12 items-center justify-center border border-rose px-7 font-sans text-sm font-semibold uppercase tracking-wider text-rose-deep transition-colors hover:bg-blush/60"
+          >
+            See the work
+          </Link>
+        </div>
       </div>
-      <div className="order-1 md:order-2">
+      <div className="grid grid-cols-2 gap-5">
         <ImageSlot
-          ratio="4/5"
-          caption="Portrait · the photographer at work"
-          alt="Impressions by AJ at work"
-          sizes="(max-width: 768px) 100vw, 50vw"
+          ratio="3/4"
+          accent="blush"
+          caption="AJ · 3:4"
+          alt="Impressions by AJ, the photographer"
+          sizes="(max-width: 768px) 50vw, 25vw"
+        />
+        <ImageSlot
+          ratio="3/4"
+          accent="mint"
+          caption="gear · 3:4"
+          alt="The studio's camera gear"
+          className="mt-8"
+          sizes="(max-width: 768px) 50vw, 25vw"
         />
       </div>
     </div>

@@ -56,9 +56,9 @@ export function SiteHeader() {
           ))}
           <Link
             href="/contact"
-            className="inline-flex h-10 items-center rounded-full bg-rose px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-rose-hover"
+            className="inline-flex h-10 items-center gap-1.5 rounded-full bg-rose px-5 font-sans text-sm font-semibold text-white transition-colors hover:bg-rose-hover"
           >
-            Enquire
+            Request a quote <span aria-hidden="true">→</span>
           </Link>
         </nav>
 
@@ -89,9 +89,9 @@ export function SiteHeader() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-full bg-rose px-5 font-sans text-sm font-semibold text-white"
+              className="mt-2 inline-flex h-11 items-center justify-center gap-1.5 rounded-full bg-rose px-5 font-sans text-sm font-semibold text-white"
             >
-              Enquire
+              Request a quote <span aria-hidden="true">→</span>
             </Link>
           </nav>
         </div>

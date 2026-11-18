@@ -1,40 +1,44 @@
-const items = [
+const meta = [
   {
     index: "01",
-    label: "Tagline",
-    value: "Capturing moments, frame by frame",
+    label: "Formats",
+    lines: ["Photo · Video", "Drone · Reels"],
   },
   {
     index: "02",
-    label: "Formats",
-    value: "Photos · Short reels · Long-form film · Drone",
+    label: "Session",
+    lines: ["1 hour → 6 hours", "Custom day rates"],
   },
   {
     index: "03",
-    label: "Session",
-    value: "1 → 6 hours · custom day rates",
-  },
-  {
-    index: "04",
     label: "Deliverables",
-    value: "Selected edits, delivered in an online gallery",
+    lines: ["Edited stills", "Short & long cuts"],
   },
 ];
 
-/** Four-column meta row under the hero. */
+/** A tagline column followed by three numbered meta columns, under the hero. */
 export function IntroStrip() {
   return (
-    <div className="shell mt-12 md:mt-16">
-      <div className="grid grid-cols-1 gap-px border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <div key={item.index} className="bg-cream p-6">
+    <div className="shell mt-10 md:mt-14">
+      <div className="grid grid-cols-1 gap-8 border-t border-hairline pt-8 sm:grid-cols-2 lg:grid-cols-4">
+        <p className="font-display text-lg italic leading-snug text-ink">
+          A visual studio for families, couples &amp; brands across New Jersey.
+        </p>
+        {meta.map((item) => (
+          <div key={item.index}>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-[11px] text-rose-deep/70">
-                {item.index}
+              <span className="font-mono text-[11px] text-rose-hover">
+                {item.index} —
               </span>
-              <span className="micro">— {item.label}</span>
+              <span className="micro">{item.label}</span>
             </div>
-            <p className="mt-3 font-display text-base text-ink">{item.value}</p>
+            <div className="mt-3 space-y-1">
+              {item.lines.map((line) => (
+                <p key={line} className="font-sans text-sm text-body">
+                  {line}
+                </p>
+              ))}
+            </div>
           </div>
         ))}
       </div>

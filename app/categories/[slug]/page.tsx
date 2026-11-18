@@ -10,6 +10,7 @@ import {
   categories,
   getCategory,
   relatedCategories,
+  accentFor,
 } from "@/lib/categories";
 import { site } from "@/lib/site";
 
@@ -45,6 +46,7 @@ export default function CategoryPage({
   if (!category) notFound();
 
   const related = relatedCategories(category.slug, 3);
+  const accent = accentFor(categories.findIndex((c) => c.slug === category.slug) + 1);
   const groupLabel =
     category.group === "indoor" ? "Indoor & ceremony" : "Outdoor shoots";
 
@@ -79,7 +81,9 @@ export default function CategoryPage({
             </div>
             <ImageSlot
               ratio="4/5"
-              caption={category.title}
+              accent={accent}
+              caption={`${category.slug} · 4:5`}
+              captionAlign="left"
               alt={`${category.title} — Impressions by AJ`}
               priority
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -98,7 +102,9 @@ export default function CategoryPage({
                 <ImageSlot
                   key={i}
                   ratio={i % 3 === 0 ? "3/4" : i % 3 === 1 ? "1/1" : "4/5"}
-                  caption={`${category.title} · ${String(i + 1).padStart(2, "0")}`}
+                  accent={accent}
+                  caption={`${category.slug} · ${String(i + 1).padStart(2, "0")}`}
+                  captionAlign="left"
                   alt={`${category.title} photograph ${i + 1}`}
                   className="break-inside-avoid"
                   sizes="(max-width: 768px) 50vw, 33vw"

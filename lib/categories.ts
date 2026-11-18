@@ -32,7 +32,7 @@ export const categories: Category[] = [
   },
   {
     slug: "birthdays",
-    title: "Birthdays (1st – 50th)",
+    title: "Birthdays 1 – 50",
     group: "indoor",
     blurb: "From first candles to milestone fifties.",
     description:
@@ -194,6 +194,14 @@ export const categories: Category[] = [
 
 export const indoorCategories = categories.filter((c) => c.group === "indoor");
 export const outdoorCategories = categories.filter((c) => c.group === "outdoor");
+
+/** Rotating pastel accent for the striped placeholder cards. */
+export const accentCycle = ["blush", "mint", "butter", "lilac"] as const;
+export type Accent = (typeof accentCycle)[number];
+
+export function accentFor(index: number): Accent {
+  return accentCycle[(index - 1) % accentCycle.length];
+}
 
 export function getCategory(slug: string): Category | undefined {
   return categories.find((c) => c.slug === slug);

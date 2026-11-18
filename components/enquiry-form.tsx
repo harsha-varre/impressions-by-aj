@@ -52,9 +52,7 @@ export function EnquiryForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
-      const data = (await res.json().catch(() => ({}))) as {
-        error?: string;
-      };
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
 
       if (!res.ok) {
         toast.error(
@@ -84,28 +82,29 @@ export function EnquiryForm() {
         />
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            autoComplete="name"
-            aria-invalid={!!errors.name}
-            {...register("name")}
-          />
-          <FieldError msg={errors.name?.message} />
-        </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            aria-invalid={!!errors.email}
-            {...register("email")}
-          />
-          <FieldError msg={errors.email?.message} />
-        </div>
+      <div>
+        <Label htmlFor="name">Full name</Label>
+        <Input
+          id="name"
+          placeholder="Jane Doe"
+          autoComplete="name"
+          aria-invalid={!!errors.name}
+          {...register("name")}
+        />
+        <FieldError msg={errors.name?.message} />
+      </div>
+
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="jane@example.com"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          {...register("email")}
+        />
+        <FieldError msg={errors.email?.message} />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -118,7 +117,7 @@ export function EnquiryForm() {
             {...register("occasion")}
           >
             <option value="" disabled>
-              Select an occasion
+              Select…
             </option>
             {occasionOptions.map((o) => (
               <option key={o} value={o}>
@@ -137,7 +136,7 @@ export function EnquiryForm() {
             {...register("session")}
           >
             <option value="" disabled>
-              Select a session length
+              Select…
             </option>
             {sessionOptions.map((s) => (
               <option key={s} value={s}>
@@ -150,22 +149,10 @@ export function EnquiryForm() {
       </div>
 
       <div>
-        <Label htmlFor="date">Preferred date</Label>
-        <Input
-          id="date"
-          type="text"
-          placeholder="e.g. Aug 2026, or a specific day"
-          aria-invalid={!!errors.date}
-          {...register("date")}
-        />
-        <FieldError msg={errors.date?.message} />
-      </div>
-
-      <div>
-        <Label htmlFor="message">Tell us about the day</Label>
+        <Label htmlFor="message">About the day</Label>
         <Textarea
           id="message"
-          placeholder="Where, who, what you're picturing…"
+          placeholder="Tell me about the family, the venue, the vibe…"
           aria-invalid={!!errors.message}
           {...register("message")}
         />
@@ -173,18 +160,25 @@ export function EnquiryForm() {
       </div>
 
       <div className="flex flex-col items-start gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-        <Button type="submit" size="lg" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting}
+          className="uppercase tracking-wider"
+        >
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
               Sending…
             </>
           ) : (
-            "Send enquiry"
+            <>
+              Request a quote <span aria-hidden="true">→</span>
+            </>
           )}
         </Button>
         <p className="font-mono text-[11px] uppercase tracking-wider text-muted">
-          {site.replyWindow} · {site.email}
+          {site.replyWindow}
         </p>
       </div>
     </form>

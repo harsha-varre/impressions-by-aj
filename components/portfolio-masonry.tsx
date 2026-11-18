@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { categories } from "@/lib/categories";
+import { categories, accentCycle, type Accent } from "@/lib/categories";
 import { ImageSlot } from "./image-slot";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ interface Tile {
   categoryTitle: string;
   caption: string;
   span: string;
+  accent: Accent;
 }
 
 // Build a varied masonry from the category list.
@@ -36,6 +37,7 @@ const tiles: Tile[] = categories.flatMap((c, ci) =>
       categoryTitle: c.title,
       caption: `${c.title} · ${String(n + 1).padStart(2, "0")}`,
       span: spanPattern[n % spanPattern.length],
+      accent: accentCycle[n % accentCycle.length],
     };
   })
 );
@@ -118,7 +120,7 @@ export function PortfolioMasonry() {
           >
             <ImageSlot
               ratio="1/1"
-              caption={tile.caption}
+              accent={tile.accent}
               alt={`${tile.categoryTitle} photograph`}
               className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]"
               sizes="(max-width: 768px) 50vw, 33vw"
@@ -171,7 +173,9 @@ export function PortfolioMasonry() {
             >
               <ImageSlot
                 ratio="3/2"
+                accent={visible[lightbox].accent}
                 caption={visible[lightbox].caption}
+                captionAlign="left"
                 alt={`${visible[lightbox].categoryTitle} photograph, enlarged`}
                 className="w-full"
                 sizes="100vw"
