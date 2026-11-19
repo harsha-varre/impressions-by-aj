@@ -8,6 +8,7 @@ import { EnquiryForm } from "@/components/enquiry-form";
 import { ImageSlot } from "@/components/image-slot";
 import { MotionSection } from "@/components/motion-section";
 import { tiers, servicesIntro } from "@/lib/services";
+import { getPortfolioPhotos } from "@/lib/photos";
 import { site } from "@/lib/site";
 
 const previewTiles = [
@@ -20,7 +21,8 @@ const previewTiles = [
   { accent: "lilac", caption: "", span: "col-span-1" },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const portfolio = await getPortfolioPhotos();
   return (
     <>
       <Hero />
@@ -63,18 +65,22 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="mt-10 grid auto-rows-[90px] grid-cols-4 gap-4 md:auto-rows-[120px]">
-              {previewTiles.map((t, i) => (
-                <ImageSlot
-                  key={i}
-                  ratio="1/1"
-                  accent={t.accent}
-                  caption={t.caption || undefined}
-                  captionAlign="left"
-                  alt={t.caption || "Portfolio frame"}
-                  className={`h-full w-full ${t.span}`}
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              ))}
+              {previewTiles.map((t, i) => {
+                const photo = portfolio[i];
+                return (
+                  <ImageSlot
+                    key={i}
+                    ratio="1/1"
+                    accent={t.accent}
+                    src={photo?.url}
+                    caption={photo ? undefined : t.caption || undefined}
+                    captionAlign="left"
+                    alt={photo?.alt ?? t.caption ?? "Portfolio frame"}
+                    className={`h-full w-full ${t.span}`}
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                );
+              })}
             </div>
           </MotionSection>
         </div>

@@ -14,7 +14,18 @@ interface Tile {
   caption: string;
   span: string;
   accent: Accent;
+  src?: string;
 }
+
+export interface PortfolioPhoto {
+  id: string;
+  url: string;
+  alt: string | null;
+  categorySlug: string;
+}
+
+const titleFor = (slug: string) =>
+  categories.find((c) => c.slug === slug)?.title ?? slug;
 
 // Build a varied masonry from the category list.
 const spanPattern = [
@@ -28,7 +39,7 @@ const spanPattern = [
   "md:col-span-3",
 ];
 
-const tiles: Tile[] = categories.flatMap((c, ci) =>
+const placeholderTiles: Tile[] = categories.flatMap((c, ci) =>
   Array.from({ length: 2 }).map((_, j) => {
     const n = ci * 2 + j;
     return {
@@ -42,22 +53,42 @@ const tiles: Tile[] = categories.flatMap((c, ci) =>
   })
 );
 
-export function PortfolioMasonry() {
+export function PortfolioMasonry({ photos }: { photos?: PortfolioPhoto[] }) {
   const reduce = useReducedMotion();
   const [active, setActive] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
 
+  const tiles = useMemo<Tile[]>(() => {
+    if (!photos || photos.length === 0) return placeholderTiles;
+    return photos.map((p, n) => ({
+      id: p.id,
+      categorySlug: p.categorySlug,
+      categoryTitle: titleFor(p.categorySlug),
+      caption: `${titleFor(p.categorySlug)} · ${String(n + 1).padStart(2, "0")}`,
+      span: spanPattern[n % spanPattern.length],
+      accent: accentCycle[n % accentCycle.length],
+      src: p.url,
+    }));
+  }, [photos]);
+
+  const usedSlugs = useMemo(
+    () => new Set(tiles.map((t) => t.categorySlug)),
+    [tiles]
+  );
+
   const filters = useMemo(
     () => [
       { slug: null, title: "All" },
-      ...categories.map((c) => ({ slug: c.slug, title: c.title })),
+      ...categories
+        .filter((c) => usedSlugs.has(c.slug))
+        .map((c) => ({ slug: c.slug, title: c.title })),
     ],
-    []
+    [usedSlugs]
   );
 
   const visible = useMemo(
     () => (active ? tiles.filter((t) => t.categorySlug === active) : tiles),
-    [active]
+    [active, tiles]
   );
 
   // Keyboard controls for the lightbox.
@@ -121,6 +152,7 @@ export function PortfolioMasonry() {
             <ImageSlot
               ratio="1/1"
               accent={tile.accent}
+              src={tile.src}
               alt={`${tile.categoryTitle} photograph`}
               className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]"
               sizes="(max-width: 768px) 50vw, 33vw"
@@ -174,6 +206,7 @@ export function PortfolioMasonry() {
               <ImageSlot
                 ratio="3/2"
                 accent={visible[lightbox].accent}
+                src={visible[lightbox].src}
                 caption={visible[lightbox].caption}
                 captionAlign="left"
                 alt={`${visible[lightbox].categoryTitle} photograph, enlarged`}

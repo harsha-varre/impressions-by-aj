@@ -12,6 +12,7 @@ import {
   relatedCategories,
   accentFor,
 } from "@/lib/categories";
+import { getPhotos } from "@/lib/photos";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -37,7 +38,7 @@ export function generateMetadata({
   };
 }
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
   params: { slug: string };
@@ -45,8 +46,10 @@ export default function CategoryPage({
   const category = getCategory(params.slug);
   if (!category) notFound();
 
+  const photos = await getPhotos(category.slug);
   const related = relatedCategories(category.slug, 3);
   const accent = accentFor(categories.findIndex((c) => c.slug === category.slug) + 1);
+  const galleryCount = Math.max(photos.length, category.gallery);
   const groupLabel =
     category.group === "indoor" ? "Indoor & ceremony" : "Outdoor shoots";
 
@@ -82,9 +85,10 @@ export default function CategoryPage({
             <ImageSlot
               ratio="4/5"
               accent={accent}
+              src={photos[0]?.url}
               caption={`${category.slug} · 4:5`}
               captionAlign="left"
-              alt={`${category.title} — Impressions by AJ`}
+              alt={photos[0]?.alt ?? `${category.title} — Impressions by AJ`}
               priority
               sizes="(max-width: 768px) 100vw, 50vw"
             />
@@ -98,18 +102,26 @@ export default function CategoryPage({
           <MotionSection>
             <SectionDivider label={`${category.title} · selected frames`} />
             <div className="mt-10 columns-2 gap-4 md:columns-3 [&>*]:mb-4">
-              {Array.from({ length: category.gallery }).map((_, i) => (
-                <ImageSlot
-                  key={i}
-                  ratio={i % 3 === 0 ? "3/4" : i % 3 === 1 ? "1/1" : "4/5"}
-                  accent={accent}
-                  caption={`${category.slug} · ${String(i + 1).padStart(2, "0")}`}
-                  captionAlign="left"
-                  alt={`${category.title} photograph ${i + 1}`}
-                  className="break-inside-avoid"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-              ))}
+              {Array.from({ length: galleryCount }).map((_, i) => {
+                const photo = photos[i];
+                return (
+                  <ImageSlot
+                    key={i}
+                    ratio={i % 3 === 0 ? "3/4" : i % 3 === 1 ? "1/1" : "4/5"}
+                    accent={accent}
+                    src={photo?.url}
+                    caption={
+                      photo
+                        ? undefined
+                        : `${category.slug} · ${String(i + 1).padStart(2, "0")}`
+                    }
+                    captionAlign="left"
+                    alt={photo?.alt ?? `${category.title} photograph ${i + 1}`}
+                    className="break-inside-avoid"
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                  />
+                );
+              })}
             </div>
           </MotionSection>
         </div>

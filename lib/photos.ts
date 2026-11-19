@@ -1,0 +1,108 @@
+import { unstable_cache } from "next/cache";
+import { createClient } from "@supabase/supabase-js";
+import { categories } from "./categories";
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  supabaseConfigured,
+} from "./supabase/config";
+
+export interface Photo {
+  id: string;
+  slot: string;
+  url: string;
+  path: string;
+  alt: string | null;
+  sort_order: number;
+}
+
+export interface PhotoSlot {
+  key: string;
+  label: string;
+  group: string;
+  /** Rough intent, for admin hints. */
+  hint?: string;
+}
+
+/** Every slot the admin can manage. */
+export const photoSlots: PhotoSlot[] = [
+  { key: "hero", label: "Home hero", group: "Site", hint: "One wide 16:9 image." },
+  {
+    key: "about-aj",
+    label: "About — portrait",
+    group: "Site",
+    hint: "A portrait of the photographer.",
+  },
+  {
+    key: "about-gear",
+    label: "About — gear",
+    group: "Site",
+    hint: "A gear / behind-the-scenes shot.",
+  },
+  ...categories.map<PhotoSlot>((c) => ({
+    key: c.slug,
+    label: c.title,
+    group: c.group === "indoor" ? "Indoor & ceremony" : "Outdoor shoots",
+    hint: "First image is the category cover; the rest fill its gallery.",
+  })),
+];
+
+export const CACHE_TAG = "photos";
+
+function publicClient() {
+  return createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
+
+/**
+ * Fetches all photos once and groups them by slot. Cached and tagged so admin
+ * mutations can revalidate it with revalidateTag(CACHE_TAG). Returns an empty
+ * map when Supabase isn't configured, so the site renders placeholders.
+ */
+export const getPhotosMap = unstable_cache(
+  async (): Promise<Record<string, Photo[]>> => {
+    if (!supabaseConfigured) return {};
+    try {
+      const supabase = publicClient();
+      const { data, error } = await supabase
+        .from("photos")
+        .select("id, slot, url, path, alt, sort_order")
+        .order("sort_order", { ascending: true });
+      if (error || !data) return {};
+      const map: Record<string, Photo[]> = {};
+      for (const row of data as Photo[]) {
+        (map[row.slot] ??= []).push(row);
+      }
+      return map;
+    } catch {
+      return {};
+    }
+  },
+  ["photos-map"],
+  { tags: [CACHE_TAG], revalidate: 3600 }
+);
+
+export async function getPhotos(slot: string): Promise<Photo[]> {
+  const map = await getPhotosMap();
+  return map[slot] ?? [];
+}
+
+export async function getFirstPhoto(slot: string): Promise<Photo | null> {
+  const list = await getPhotos(slot);
+  return list[0] ?? null;
+}
+
+/** All category photos flattened, for the portfolio gallery. */
+export async function getPortfolioPhotos(): Promise<
+  (Photo & { categorySlug: string })[]
+> {
+  const map = await getPhotosMap();
+  const out: (Photo & { categorySlug: string })[] = [];
+  for (const c of categories) {
+    for (const p of map[c.slug] ?? []) {
+      out.push({ ...p, categorySlug: c.slug });
+    }
+  }
+  return out;
+}

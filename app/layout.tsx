@@ -3,8 +3,6 @@ import { Toaster } from "sonner";
 import { fontVariables } from "@/lib/fonts";
 import { site } from "@/lib/site";
 import { localBusinessJsonLd, JsonLd } from "@/lib/jsonld";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -54,9 +52,7 @@ export default function RootLayout({
     <html lang="en" className={fontVariables}>
       <body>
         <JsonLd data={localBusinessJsonLd()} />
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        {children}
         <Toaster
           position="bottom-center"
           toastOptions={{

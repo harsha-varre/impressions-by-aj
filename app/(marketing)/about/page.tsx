@@ -4,6 +4,7 @@ import { Camera, Aperture, Film, Send } from "lucide-react";
 import { ImageSlot } from "@/components/image-slot";
 import { SectionDivider } from "@/components/section-divider";
 import { MotionSection } from "@/components/motion-section";
+import { getFirstPhoto } from "@/lib/photos";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -45,7 +46,8 @@ const process = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const portrait = await getFirstPhoto("about-aj");
   return (
     <>
       <section className="bg-cream py-16 md:py-24">
@@ -69,8 +71,9 @@ export default function AboutPage() {
           <ImageSlot
             ratio="4/5"
             accent="blush"
+            src={portrait?.url}
             caption="AJ · 4:5"
-            alt="Impressions by AJ, the photographer"
+            alt={portrait?.alt ?? "Impressions by AJ, the photographer"}
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
           />

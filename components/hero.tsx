@@ -1,24 +1,34 @@
 import { Heart } from "lucide-react";
 import { ImageSlot } from "./image-slot";
+import { getFirstPhoto } from "@/lib/photos";
 
 /**
- * 16:9 striped panel (an ImageSlot that becomes a real photo when a src is
- * supplied). Eyebrow + headline sit lower-left; the final line is in the
- * Parisienne script. Two outline hearts mark the top corners, and a mono
- * caption sits bottom-right.
+ * 16:9 panel — a real photo when the "hero" slot has one, otherwise the striped
+ * placeholder. Eyebrow + headline sit lower-left; the final line is script.
  */
-export function Hero() {
+export async function Hero() {
+  const photo = await getFirstPhoto("hero");
+
   return (
     <section className="shell pt-8 md:pt-10">
       <div className="relative">
         <ImageSlot
           ratio="16/9"
           accent="blush"
-          alt="Impressions by AJ — New Jersey photography"
+          src={photo?.url}
+          alt={photo?.alt ?? "Impressions by AJ — New Jersey photography"}
           priority
           sizes="100vw"
           className="w-full"
         />
+
+        {/* Legibility scrim only when a real photo is present */}
+        {photo ? (
+          <div
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent"
+            aria-hidden="true"
+          />
+        ) : null}
 
         {/* Decorative hearts */}
         <Heart
@@ -32,14 +42,20 @@ export function Hero() {
 
         {/* Overlay copy, lower-left */}
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 lg:p-16">
-          <span className="micro">
+          <span className={photo ? "micro text-rose-soft" : "micro"}>
             A New Jersey photography studio · Est. 2021
           </span>
-          <h1 className="mt-4 font-display text-ink">
+          <h1 className={photo ? "mt-4 font-display text-white" : "mt-4 font-display text-ink"}>
             <span className="block text-4xl italic leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl">
               Capturing moments,
             </span>
-            <span className="mt-1 block font-script text-4xl not-italic text-rose-deep sm:text-5xl md:text-6xl lg:text-7xl">
+            <span
+              className={
+                photo
+                  ? "mt-1 block font-script text-4xl not-italic text-rose-soft sm:text-5xl md:text-6xl lg:text-7xl"
+                  : "mt-1 block font-script text-4xl not-italic text-rose-deep sm:text-5xl md:text-6xl lg:text-7xl"
+              }
+            >
               frame by frame.
             </span>
           </h1>

@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { ImageSlot } from "./image-slot";
+import { getFirstPhoto } from "@/lib/photos";
 
-export function AboutBlock() {
+export async function AboutBlock() {
+  const [aj, gear] = await Promise.all([
+    getFirstPhoto("about-aj"),
+    getFirstPhoto("about-gear"),
+  ]);
   return (
     <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
       <div>
@@ -37,15 +42,17 @@ export function AboutBlock() {
         <ImageSlot
           ratio="3/4"
           accent="blush"
+          src={aj?.url}
           caption="AJ · 3:4"
-          alt="Impressions by AJ, the photographer"
+          alt={aj?.alt ?? "Impressions by AJ, the photographer"}
           sizes="(max-width: 768px) 50vw, 25vw"
         />
         <ImageSlot
           ratio="3/4"
           accent="mint"
+          src={gear?.url}
           caption="gear · 3:4"
-          alt="The studio's camera gear"
+          alt={gear?.alt ?? "The studio's camera gear"}
           className="mt-8"
           sizes="(max-width: 768px) 50vw, 25vw"
         />
