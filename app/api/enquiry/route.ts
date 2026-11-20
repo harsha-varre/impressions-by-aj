@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { enquirySchema } from "@/lib/enquiry";
 import { site } from "@/lib/site";
 
 export const runtime = "nodejs";
 
 // Simple in-memory, per-instance rate limiter.
-// For multi-instance production, back this with Upstash/Redis.
 const WINDOW_MS = 60_000;
 const MAX_PER_WINDOW = 4;
 const hits = new Map<string, { count: number; reset: number }>();
@@ -67,20 +66,6 @@ export async function POST(req: Request) {
 
   const { name, email, occasion, session, date, message } = parsed.data;
   const studioEmail = process.env.STUDIO_EMAIL || site.email;
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
-    // No key configured (e.g. local dev) — log and succeed so the UI flows.
-    console.warn("[enquiry] RESEND_API_KEY not set; skipping email send.", {
-      name,
-      email,
-      occasion,
-    });
-    return NextResponse.json({ ok: true, delivered: false });
-  }
-
-  const resend = new Resend(apiKey);
-  const from = `Impressions by AJ <onboarding@resend.dev>`;
 
   const studioHtml = `
     <h2 style="font-family:Georgia,serif;color:#3a2f3a">New enquiry</h2>
@@ -88,7 +73,7 @@ export async function POST(req: Request) {
     <p><strong>Email:</strong> ${escapeHtml(email)}</p>
     <p><strong>Occasion:</strong> ${escapeHtml(occasion)}</p>
     <p><strong>Session:</strong> ${escapeHtml(session)}</p>
-    <p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>
+    ${date ? `<p><strong>Preferred date:</strong> ${escapeHtml(date)}</p>` : ""}
     <p><strong>Message:</strong></p>
     <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
   `;
@@ -103,39 +88,93 @@ export async function POST(req: Request) {
     </div>
   `;
 
-  try {
-    const studioSend = await resend.emails.send({
-      from,
-      to: studioEmail,
-      replyTo: email,
-      subject: `New enquiry — ${occasion} (${name})`,
-      html: studioHtml,
-    });
+  const subject = `New enquiry — ${occasion} (${name})`;
 
-    if (studioSend.error) {
-      console.error("[enquiry] studio send failed", studioSend.error);
+  // ── Preferred: send through Gmail (SMTP) ────────────────────────────────
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+  if (gmailUser && gmailPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: { user: gmailUser, pass: gmailPass },
+      });
+
+      await transporter.sendMail({
+        from: `"Impressions by AJ" <${gmailUser}>`,
+        to: studioEmail,
+        replyTo: `"${name}" <${email}>`,
+        subject,
+        html: studioHtml,
+      });
+
+      // Auto-reply to the enquirer (best effort).
+      await transporter
+        .sendMail({
+          from: `"Impressions by AJ" <${gmailUser}>`,
+          to: email,
+          subject: "We received your enquiry — Impressions by AJ",
+          html: replyHtml,
+        })
+        .catch((err) => console.warn("[enquiry] gmail auto-reply failed", err));
+
+      return NextResponse.json({ ok: true, delivered: true });
+    } catch (err) {
+      console.error("[enquiry] gmail send failed", err);
       return NextResponse.json(
         { error: "We couldn't send your enquiry. Please email us directly." },
         { status: 502 }
       );
     }
-
-    // Auto-reply is best-effort; don't fail the request if it bounces.
-    await resend.emails
-      .send({
-        from,
-        to: email,
-        subject: "We received your enquiry — Impressions by AJ",
-        html: replyHtml,
-      })
-      .catch((err) => console.warn("[enquiry] auto-reply failed", err));
-
-    return NextResponse.json({ ok: true, delivered: true });
-  } catch (err) {
-    console.error("[enquiry] unexpected error", err);
-    return NextResponse.json(
-      { error: "Unexpected error. Please email us directly." },
-      { status: 500 }
-    );
   }
+
+  // ── Fallback: Resend, if configured ─────────────────────────────────────
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(resendKey);
+      const from = "Impressions by AJ <onboarding@resend.dev>";
+
+      const studioSend = await resend.emails.send({
+        from,
+        to: studioEmail,
+        replyTo: email,
+        subject,
+        html: studioHtml,
+      });
+      if (studioSend.error) {
+        console.error("[enquiry] resend send failed", studioSend.error);
+        return NextResponse.json(
+          { error: "We couldn't send your enquiry. Please email us directly." },
+          { status: 502 }
+        );
+      }
+
+      await resend.emails
+        .send({
+          from,
+          to: email,
+          subject: "We received your enquiry — Impressions by AJ",
+          html: replyHtml,
+        })
+        .catch((err) => console.warn("[enquiry] resend auto-reply failed", err));
+
+      return NextResponse.json({ ok: true, delivered: true });
+    } catch (err) {
+      console.error("[enquiry] resend error", err);
+      return NextResponse.json(
+        { error: "Unexpected error. Please email us directly." },
+        { status: 500 }
+      );
+    }
+  }
+
+  // ── Neither configured — log so the UI still flows in dev ───────────────
+  console.warn("[enquiry] no mailer configured; logging only.", {
+    name,
+    email,
+    occasion,
+  });
+  return NextResponse.json({ ok: true, delivered: false });
 }
