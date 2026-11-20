@@ -4,7 +4,11 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
-import { PHOTO_BUCKET, supabaseAdminConfigured } from "@/lib/supabase/config";
+import {
+  PHOTO_BUCKET,
+  supabaseConfigured,
+  supabaseAdminConfigured,
+} from "@/lib/supabase/config";
 import { CACHE_TAG, photoSlots } from "@/lib/photos";
 
 export type ActionState = { error?: string; ok?: string };
@@ -29,10 +33,22 @@ export async function signIn(
     return { error: "Enter your email and password." };
   }
 
+  if (!supabaseConfigured) {
+    return { error: "Supabase isn't configured (missing URL / anon key)." };
+  }
+
   const supabase = createServerSupabase();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
   if (error) {
-    return { error: "Those details didn't match. Try again." };
+    // Surface the real reason to help diagnose setup issues.
+    const code = error.code ?? error.status ?? "";
+    return { error: `${error.message}${code ? ` [${code}]` : ""}` };
+  }
+  if (!data.user) {
+    return { error: "Signed in but no user returned — check your keys." };
   }
   redirect("/admin");
 }
