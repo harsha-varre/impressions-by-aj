@@ -1,65 +1,140 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
-import { Trash2, UploadCloud, LogOut, Check } from "lucide-react";
+import { Trash2, UploadCloud, LogOut, Check, Loader2 } from "lucide-react";
 import {
-  uploadPhotos,
+  createUploadUrl,
+  recordPhoto,
   deletePhoto,
   signOut,
   type ActionState,
 } from "./actions";
 import { photoSlots, type Photo } from "@/lib/photos";
+import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { PHOTO_BUCKET } from "@/lib/supabase/config";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const groups = ["Site", "Indoor & ceremony", "Outdoor shoots"];
+const MAX_BYTES = 25 * 1024 * 1024;
 
 function UploadForm({ slot }: { slot: string }) {
-  const [state, action] = useFormState<ActionState, FormData>(uploadPhotos, {});
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState("");
+  const [msg, setMsg] = useState<{ ok?: string; error?: string }>({});
+
+  async function handleUpload() {
+    const files = Array.from(inputRef.current?.files ?? []);
+    if (files.length === 0) {
+      setMsg({ error: "Choose at least one image first." });
+      return;
+    }
+    setBusy(true);
+    setMsg({});
+
+    const supabase = createBrowserSupabase();
+    let done = 0;
+    try {
+      for (const file of files) {
+        if (!file.type.startsWith("image/")) {
+          setMsg({ error: `"${file.name}" isn't an image.` });
+          setBusy(false);
+          return;
+        }
+        if (file.size > MAX_BYTES) {
+          setMsg({ error: `"${file.name}" is over 25MB.` });
+          setBusy(false);
+          return;
+        }
+
+        setProgress(`Uploading ${done + 1} of ${files.length}…`);
+
+        const signed = await createUploadUrl(slot, file.name);
+        if (signed.error || !signed.path || !signed.token) {
+          setMsg({ error: signed.error ?? "Could not start upload." });
+          setBusy(false);
+          return;
+        }
+
+        const { error: upErr } = await supabase.storage
+          .from(PHOTO_BUCKET)
+          .uploadToSignedUrl(signed.path, signed.token, file, {
+            contentType: file.type,
+          });
+        if (upErr) {
+          setMsg({ error: `Upload failed: ${upErr.message}` });
+          setBusy(false);
+          return;
+        }
+
+        const rec = await recordPhoto(slot, signed.path);
+        if (rec.error) {
+          setMsg({ error: rec.error });
+          setBusy(false);
+          return;
+        }
+        done += 1;
+      }
+
+      if (inputRef.current) inputRef.current.value = "";
+      setMsg({ ok: `Uploaded ${done} image${done === 1 ? "" : "s"}.` });
+      router.refresh();
+    } catch (err) {
+      setMsg({
+        error: err instanceof Error ? err.message : "Upload failed.",
+      });
+    } finally {
+      setProgress("");
+      setBusy(false);
+    }
+  }
+
   return (
-    <form action={action} className="space-y-4">
-      <input type="hidden" name="slot" value={slot} />
+    <div className="space-y-4">
       <label
         htmlFor={`files-${slot}`}
         className="flex cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-rose/50 bg-white/50 px-6 py-10 text-center transition-colors hover:border-rose hover:bg-blush/30"
       >
         <UploadCloud className="h-6 w-6 text-rose-deep" aria-hidden="true" />
         <span className="font-sans text-sm text-body">
-          Choose images (JPG / PNG / WebP, up to 10MB each)
+          Choose images (JPG / PNG / WebP, up to 25MB each)
         </span>
         <input
+          ref={inputRef}
           id={`files-${slot}`}
-          name="files"
           type="file"
           accept="image/*"
           multiple
+          disabled={busy}
           className="block w-full text-xs text-muted file:mr-3 file:border-0 file:bg-blush file:px-3 file:py-1.5 file:font-sans file:text-xs file:text-rose-deep"
         />
       </label>
       <div className="flex items-center gap-3">
-        <SubmitUpload />
-        {state.ok ? (
+        <Button type="button" onClick={handleUpload} disabled={busy}>
+          {busy ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> {progress || "Uploading…"}
+            </>
+          ) : (
+            "Upload"
+          )}
+        </Button>
+        {msg.ok ? (
           <span className="flex items-center gap-1 font-sans text-xs text-rose-deep">
-            <Check className="h-3.5 w-3.5" /> {state.ok}
+            <Check className="h-3.5 w-3.5" /> {msg.ok}
           </span>
         ) : null}
-        {state.error ? (
+        {msg.error ? (
           <span className="font-sans text-xs text-rose-deep" role="alert">
-            {state.error}
+            {msg.error}
           </span>
         ) : null}
       </div>
-    </form>
-  );
-}
-
-function SubmitUpload() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending ? "Uploading…" : "Upload"}
-    </Button>
+    </div>
   );
 }
 
