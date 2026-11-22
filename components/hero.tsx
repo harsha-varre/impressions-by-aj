@@ -25,7 +25,7 @@ export async function Hero() {
         {/* Legibility scrim only when a real photo is present */}
         {photo ? (
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/50 to-ink/10"
             aria-hidden="true"
           />
         ) : null}
@@ -42,10 +42,22 @@ export async function Hero() {
 
         {/* Overlay copy, lower-left */}
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 lg:p-16">
-          <span className={photo ? "micro text-rose-soft" : "micro"}>
+          <span
+            className={
+              photo
+                ? "micro text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.75)]"
+                : "micro"
+            }
+          >
             A New Jersey photography studio · Est. 2021
           </span>
-          <h1 className={photo ? "mt-4 font-display text-white" : "mt-4 font-display text-ink"}>
+          <h1
+            className={
+              photo
+                ? "mt-4 font-display text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+                : "mt-4 font-display text-ink"
+            }
+          >
             <span className="block text-4xl italic leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl">
               Capturing moments,
             </span>
