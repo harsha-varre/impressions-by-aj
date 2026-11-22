@@ -72,8 +72,7 @@ export function ImageSlot({
           fill
           sizes={sizes}
           priority={priority}
-          placeholder="blur"
-          blurDataURL="data:image/gif;base64,R0lGODlhAQABAIAAAPrs6QAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+          unoptimized
           className="object-cover"
         />
       ) : caption ? (

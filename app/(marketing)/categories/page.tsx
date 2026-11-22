@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/categories" },
 };
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default function CategoriesPage() {
   return (

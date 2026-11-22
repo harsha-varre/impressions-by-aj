@@ -46,7 +46,7 @@ const process = [
   },
 ];
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const portrait = await getFirstPhoto("about-aj");

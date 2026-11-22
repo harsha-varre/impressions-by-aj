@@ -15,11 +15,7 @@ import {
 import { getPhotos } from "@/lib/photos";
 import { site } from "@/lib/site";
 
-export const revalidate = 60;
-
-export function generateStaticParams() {
-  return categories.map((c) => ({ slug: c.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export function generateMetadata({
   params,
