@@ -156,7 +156,12 @@ function DeleteSubmit() {
       type="submit"
       disabled={pending}
       aria-label="Delete photo"
-      className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink/70 text-white opacity-0 transition-opacity hover:bg-rose-deep group-hover:opacity-100 disabled:opacity-50"
+      onClick={(e) => {
+        if (!window.confirm("Delete this photo? This can't be undone.")) {
+          e.preventDefault();
+        }
+      }}
+      className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink/75 text-white transition-colors hover:bg-rose-deep disabled:opacity-50"
     >
       <Trash2 className="h-4 w-4" />
     </button>
