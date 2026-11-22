@@ -4,6 +4,7 @@ import { categories } from "./categories";
 import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY,
   supabaseConfigured,
 } from "./supabase/config";
 
@@ -47,8 +48,13 @@ export const photoSlots: PhotoSlot[] = [
   })),
 ];
 
-function publicClient() {
-  return createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+// Reads run only on the server (Server Components / ISR), so we use the
+// service-role key when available — it bypasses RLS, so photos show regardless
+// of table read policies. Falls back to the anon key. The key never reaches
+// the browser (non-public env is stripped from client bundles).
+function readClient() {
+  const key = SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY!;
+  return createClient(SUPABASE_URL!, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
@@ -63,7 +69,7 @@ export const getPhotosMap = cache(
   async (): Promise<Record<string, Photo[]>> => {
     if (!supabaseConfigured) return {};
     try {
-      const supabase = publicClient();
+      const supabase = readClient();
       const { data, error } = await supabase
         .from("photos")
         .select("id, slot, url, path, alt, sort_order")
