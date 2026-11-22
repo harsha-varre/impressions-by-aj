@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { categories } from "./categories";
 import {
@@ -47,8 +47,6 @@ export const photoSlots: PhotoSlot[] = [
   })),
 ];
 
-export const CACHE_TAG = "photos";
-
 function publicClient() {
   return createClient(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -56,11 +54,12 @@ function publicClient() {
 }
 
 /**
- * Fetches all photos once and groups them by slot. Cached and tagged so admin
- * mutations can revalidate it with revalidateTag(CACHE_TAG). Returns an empty
- * map when Supabase isn't configured, so the site renders placeholders.
+ * Fetches all photos once per render and groups them by slot (React cache
+ * dedupes the multiple callers on a page). Pages set `revalidate` for ISR, and
+ * admin mutations call revalidatePath for near-instant refresh. Returns an
+ * empty map when Supabase isn't configured, so the site renders placeholders.
  */
-export const getPhotosMap = unstable_cache(
+export const getPhotosMap = cache(
   async (): Promise<Record<string, Photo[]>> => {
     if (!supabaseConfigured) return {};
     try {
@@ -78,9 +77,7 @@ export const getPhotosMap = unstable_cache(
     } catch {
       return {};
     }
-  },
-  ["photos-map"],
-  { tags: [CACHE_TAG], revalidate: 3600 }
+  }
 );
 
 export async function getPhotos(slot: string): Promise<Photo[]> {

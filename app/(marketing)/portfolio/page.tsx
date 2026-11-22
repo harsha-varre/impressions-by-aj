@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/portfolio" },
 };
 
+export const revalidate = 60;
+
 export default async function PortfolioPage() {
   const photos = await getPortfolioPhotos();
   return (

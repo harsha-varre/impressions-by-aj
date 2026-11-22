@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag, revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
@@ -9,7 +9,7 @@ import {
   supabaseConfigured,
   supabaseAdminConfigured,
 } from "@/lib/supabase/config";
-import { CACHE_TAG, photoSlots } from "@/lib/photos";
+import { photoSlots } from "@/lib/photos";
 
 export type ActionState = { error?: string; ok?: string };
 
@@ -60,8 +60,12 @@ export async function signOut() {
 }
 
 function refresh() {
-  revalidateTag(CACHE_TAG);
+  // Refresh every public page that reads photos, plus the admin view.
   revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/portfolio");
+  revalidatePath("/about");
+  revalidatePath("/categories/[slug]", "page");
 }
 
 function sanitizeExt(filename: string): string {

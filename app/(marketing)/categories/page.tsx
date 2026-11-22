@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/categories" },
 };
 
+export const revalidate = 60;
+
 export default function CategoriesPage() {
   return (
     <>

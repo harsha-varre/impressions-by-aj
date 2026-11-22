@@ -21,6 +21,8 @@ const previewTiles = [
   { accent: "lilac", caption: "", span: "col-span-1" },
 ] as const;
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const portfolio = await getPortfolioPhotos();
   return (
