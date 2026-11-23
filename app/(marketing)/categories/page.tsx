@@ -23,7 +23,7 @@ export default function CategoriesPage() {
               <span className="italic">to pick up a camera.</span>
             </h1>
             <p className="max-w-xs font-sans text-sm text-body">
-              Ten indoor &amp; ceremony categories and seven outdoor shoots —
+              Eleven indoor &amp; ceremony categories and six outdoor shoots —
               each with its own page, write-up and gallery.
             </p>
           </div>

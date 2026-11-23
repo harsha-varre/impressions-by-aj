@@ -28,18 +28,6 @@ export interface PhotoSlot {
 /** Every slot the admin can manage. */
 export const photoSlots: PhotoSlot[] = [
   { key: "hero", label: "Home hero", group: "Site", hint: "One wide 16:9 image." },
-  {
-    key: "about-aj",
-    label: "About — portrait",
-    group: "Site",
-    hint: "A portrait of the photographer.",
-  },
-  {
-    key: "about-gear",
-    label: "About — gear",
-    group: "Site",
-    hint: "A gear / behind-the-scenes shot.",
-  },
   ...categories.map<PhotoSlot>((c) => ({
     key: c.slug,
     label: c.title,

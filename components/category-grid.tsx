@@ -12,7 +12,10 @@ export async function CategoryGrid() {
   return (
     <div className="shell">
       <MotionSection>
-        <SectionDivider label="Indoor & ceremony" meta="10 categories" />
+        <SectionDivider
+          label="Indoor & ceremony"
+          meta={`${indoorCategories.length} categories`}
+        />
         <div className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-4">
           {indoorCategories.map((category, i) => (
             <CategoryCard
@@ -26,13 +29,16 @@ export async function CategoryGrid() {
       </MotionSection>
 
       <MotionSection className="mt-14">
-        <SectionDivider label="Outdoor shoots" meta="7 categories" />
+        <SectionDivider
+          label="Outdoor shoots"
+          meta={`${outdoorCategories.length} categories`}
+        />
         <div className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-4">
           {outdoorCategories.map((category, i) => (
             <CategoryCard
               key={category.slug}
               category={category}
-              index={i + 11}
+              index={indoorCategories.length + i + 1}
               src={coverFor(category.slug)}
             />
           ))}

@@ -1,20 +1,16 @@
 import Link from "next/link";
-import { ImageSlot } from "./image-slot";
-import { getFirstPhoto } from "@/lib/photos";
 
-export async function AboutBlock() {
-  const [aj, gear] = await Promise.all([
-    getFirstPhoto("about-aj"),
-    getFirstPhoto("about-gear"),
-  ]);
+export function AboutBlock() {
   return (
-    <div className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
+    <div className="grid gap-8 md:grid-cols-[1fr_1.2fr] md:gap-14">
       <div>
         <span className="micro">About the studio</span>
         <h2 className="mt-4 font-display text-3xl leading-tight text-ink md:text-4xl">
           A small studio with a <span className="italic">long memory.</span>
         </h2>
-        <p className="mt-5 font-sans text-body">
+      </div>
+      <div>
+        <p className="font-sans text-body">
           Impressions by AJ is a photography &amp; cinema studio based in New
           Jersey, built around South Asian ceremonies, family milestones, and
           the small moments between.
@@ -37,25 +33,6 @@ export async function AboutBlock() {
             See the work
           </Link>
         </div>
-      </div>
-      <div className="grid grid-cols-2 gap-5">
-        <ImageSlot
-          ratio="3/4"
-          accent="blush"
-          src={aj?.url}
-          caption="AJ · 3:4"
-          alt={aj?.alt ?? "Impressions by AJ, the photographer"}
-          sizes="(max-width: 768px) 50vw, 25vw"
-        />
-        <ImageSlot
-          ratio="3/4"
-          accent="mint"
-          src={gear?.url}
-          caption="gear · 3:4"
-          alt={gear?.alt ?? "The studio's camera gear"}
-          className="mt-8"
-          sizes="(max-width: 768px) 50vw, 25vw"
-        />
       </div>
     </div>
   );

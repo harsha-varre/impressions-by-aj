@@ -1,10 +1,12 @@
 import { Heart } from "lucide-react";
 import { ImageSlot } from "./image-slot";
 import { getFirstPhoto } from "@/lib/photos";
+import { cn } from "@/lib/utils";
 
 /**
  * 16:9 panel — a real photo when the "hero" slot has one, otherwise the striped
- * placeholder. Eyebrow + headline sit lower-left; the final line is script.
+ * placeholder. Eyebrow + headline sit lower-left; over a photo they sit on a
+ * light translucent panel so the image stays bright and the text stays legible.
  */
 export async function Hero() {
   const photo = await getFirstPhoto("hero");
@@ -22,14 +24,6 @@ export async function Hero() {
           className="w-full"
         />
 
-        {/* Legibility scrim only when a real photo is present */}
-        {photo ? (
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/50 to-ink/10"
-            aria-hidden="true"
-          />
-        ) : null}
-
         {/* Decorative hearts */}
         <Heart
           className="absolute left-5 top-5 h-7 w-7 rotate-[-10deg] text-rose/70 md:left-8 md:top-8 md:h-9 md:w-9"
@@ -41,42 +35,37 @@ export async function Hero() {
         />
 
         {/* Overlay copy, lower-left */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 lg:p-16">
-          <span
-            className={
-              photo
-                ? "micro text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.75)]"
-                : "micro"
-            }
+        <div className="absolute inset-0 flex items-end p-5 md:p-8 lg:p-10">
+          <div
+            className={cn(
+              "max-w-2xl",
+              photo &&
+                "rounded-2xl bg-ink/30 px-5 py-4 backdrop-blur-sm md:px-7 md:py-6"
+            )}
           >
-            A New Jersey photography studio · Est. 2021
-          </span>
-          <h1
-            className={
-              photo
-                ? "mt-4 font-display text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
-                : "mt-4 font-display text-ink"
-            }
-          >
-            <span className="block text-4xl italic leading-[1.05] sm:text-5xl md:text-6xl lg:text-7xl">
-              Capturing moments,
+            <span className={photo ? "micro text-white" : "micro"}>
+              A New Jersey photography studio · Est. 2021
             </span>
-            <span
-              className={
-                photo
-                  ? "mt-1 block font-script text-4xl not-italic text-rose-soft sm:text-5xl md:text-6xl lg:text-7xl"
-                  : "mt-1 block font-script text-4xl not-italic text-rose-deep sm:text-5xl md:text-6xl lg:text-7xl"
-              }
+            <h1
+              className={cn(
+                "mt-3 font-display",
+                photo ? "text-white" : "text-ink"
+              )}
             >
-              frame by frame.
-            </span>
-          </h1>
+              <span className="block text-3xl italic leading-[1.05] sm:text-4xl md:text-5xl lg:text-6xl">
+                Capturing moments,
+              </span>
+              <span
+                className={cn(
+                  "mt-1 block font-script text-3xl not-italic sm:text-4xl md:text-5xl lg:text-6xl",
+                  photo ? "text-white" : "text-rose-deep"
+                )}
+              >
+                frame by frame.
+              </span>
+            </h1>
+          </div>
         </div>
-
-        {/* Mono caption */}
-        <span className="absolute bottom-5 right-5 bg-cream/80 px-2 py-1 font-mono text-[11px] text-ink/60 md:bottom-8 md:right-8">
-          hero · 16:9
-        </span>
       </div>
     </section>
   );

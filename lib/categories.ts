@@ -32,7 +32,7 @@ export const categories: Category[] = [
   },
   {
     slug: "birthdays",
-    title: "Birthdays 1 – 50",
+    title: "Birthdays",
     group: "indoor",
     blurb: "From first candles to milestone fifties.",
     description:
@@ -153,7 +153,7 @@ export const categories: Category[] = [
   {
     slug: "gym-shoots",
     title: "Gym shoots",
-    group: "outdoor",
+    group: "indoor",
     blurb: "Strength, in its own light.",
     description:
       "Athlete and fitness sessions that show effort and form. Shot for the lift, the line and the discipline — on location or in your gym.",

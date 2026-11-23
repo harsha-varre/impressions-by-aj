@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Camera, Aperture, Film, Send } from "lucide-react";
-import { ImageSlot } from "@/components/image-slot";
 import { SectionDivider } from "@/components/section-divider";
 import { MotionSection } from "@/components/motion-section";
-import { getFirstPhoto } from "@/lib/photos";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -48,37 +46,24 @@ const process = [
 
 export const dynamic = "force-dynamic";
 
-export default async function AboutPage() {
-  const portrait = await getFirstPhoto("about-aj");
+export default function AboutPage() {
   return (
     <>
       <section className="bg-cream py-16 md:py-24">
-        <div className="shell grid items-center gap-12 md:grid-cols-2">
-          <div>
-            <span className="micro">About the studio</span>
-            <h1 className="mt-4 font-display text-4xl leading-[1.05] text-ink md:text-6xl">
-              A small studio with a{" "}
-              <span className="italic">long memory.</span>
-            </h1>
-            <p className="mt-6 font-sans text-body">
-              Impressions by AJ is a photography &amp; cinema studio based in New
-              Jersey, built around South Asian ceremonies, family milestones, and
-              the small moments between.
-            </p>
-            <p className="mt-4 font-sans text-body">
-              Every booking comes with a conversation first — about the day, the
-              family, the feeling. The pictures follow from there.
-            </p>
-          </div>
-          <ImageSlot
-            ratio="4/5"
-            accent="blush"
-            src={portrait?.url}
-            caption="AJ · 4:5"
-            alt={portrait?.alt ?? "Impressions by AJ, the photographer"}
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+        <div className="shell max-w-3xl">
+          <span className="micro">About the studio</span>
+          <h1 className="mt-4 font-display text-4xl leading-[1.05] text-ink md:text-6xl">
+            A small studio with a <span className="italic">long memory.</span>
+          </h1>
+          <p className="mt-6 font-sans text-body">
+            Impressions by AJ is a photography &amp; cinema studio based in New
+            Jersey, built around South Asian ceremonies, family milestones, and
+            the small moments between.
+          </p>
+          <p className="mt-4 font-sans text-body">
+            Every booking comes with a conversation first — about the day, the
+            family, the feeling. The pictures follow from there.
+          </p>
         </div>
       </section>
 

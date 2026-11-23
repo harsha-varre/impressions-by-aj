@@ -47,11 +47,10 @@ export interface ImageSlotProps {
  */
 export function ImageSlot({
   ratio = "3/4",
-  caption,
-  captionAlign = "right",
   accent = "rose",
   src,
   alt,
+  caption,
   className,
   sizes = "(max-width: 768px) 100vw, 33vw",
   priority,
@@ -75,17 +74,6 @@ export function ImageSlot({
           unoptimized
           className="object-cover"
         />
-      ) : caption ? (
-        <div
-          className={cn(
-            "absolute inset-0 flex items-end p-3",
-            captionAlign === "right" ? "justify-end" : "justify-start"
-          )}
-        >
-          <span className="font-mono text-[10px] lowercase tracking-wider text-ink/55">
-            {caption}
-          </span>
-        </div>
       ) : null}
     </div>
   );
