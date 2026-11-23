@@ -45,7 +45,7 @@ export const tiers: ServiceTier[] = [
     inclusions: [
       "Full photo + video + drone",
       "Short & long-form films",
-      "2nd shooter available",
+      "Two photographers available",
       "Weddings, arangetrams, galas",
     ],
   },
@@ -65,7 +65,7 @@ export const addOns: AddOn[] = [
   },
   {
     id: "second-shooter",
-    name: "2nd shooter",
+    name: "Two photographers",
     detail: "A second angle so no moment runs twice.",
   },
   {
